@@ -33,14 +33,23 @@ const msListToArray = pageList => {
   return out;
 };
 
-const getSymbolsPage = (documentData: SketchDocumentData) =>
-  documentData.symbolsPageOrCreateIfNecessary();
+export const getSymbolsPage = (documentData: SketchDocumentData) => {
+  const pages = documentData.pages();
+  const array = msListToArray(pages);
+  return array.find(p => String(p.name()) === 'Symbols');
+};
 
 const getExistingSymbols = (documentData: SketchDocumentData) => {
   if (!hasInitialized) {
     hasInitialized = true;
 
-    const symbolsPage = getSymbolsPage(documentData);
+    let symbolsPage = getSymbolsPage(documentData);
+    if (!symbolsPage) {
+      const currentPage = documentData.currentPage();
+      symbolsPage = documentData.addBlankPage();
+      symbolsPage.setName('Symbols');
+      documentData.setCurrentPage(currentPage);
+    }
 
     existingSymbols = msListToArray(symbolsPage.layers()).map(x => {
       const symbolJson = JSON.parse(toSJSON(x));
@@ -76,7 +85,7 @@ export const injectSymbols = (documentData?: SketchDocumentData) => {
     }
     const currentPage = documentData.currentPage();
 
-    const symbolsPage = getSymbolsPage(documentData);
+    const symbolsPage = documentData.symbolsPageOrCreateIfNecessary();
 
     let left = 0;
     Object.keys(symbolsRegistry).forEach(key => {

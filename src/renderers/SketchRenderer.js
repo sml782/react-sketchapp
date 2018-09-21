@@ -1,7 +1,6 @@
 // @flow
 import layerGroup from '../jsonUtils/layerGroup';
 import type { LayoutInfo, ViewStyle, TextStyle, TreeNode } from '../types';
-import processTransform from '../utils/processTransform';
 
 const DEFAULT_OPACITY = 1.0;
 
@@ -16,7 +15,10 @@ export default class SketchRenderer {
   renderGroupLayer(layout: LayoutInfo, style: ViewStyle, textStyle: TextStyle, props: any): any {
     // Default SketchRenderer just renders an empty group
 
-    const transform = processTransform(layout, style);
+    // TODO(lmr): applying transform to the group would be ideal, but not sure if it's possible
+    // if (style.transform !== undefined) {
+    //   processTransform(layer, layout, style.transform);
+    // }
 
     const opacity = style.opacity !== undefined ? style.opacity : DEFAULT_OPACITY;
 
@@ -30,7 +32,6 @@ export default class SketchRenderer {
         props.resizingConstraint,
       ),
       name: props.name || this.getDefaultGroupName(props),
-      ...transform,
     };
   }
 

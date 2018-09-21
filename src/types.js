@@ -158,8 +158,6 @@ export type ViewStyle = {
   borderBottomWidth?: number,
   borderLeftWidth?: number,
   opacity?: number,
-  transform?: string,
-  transformOrigin?: string,
 };
 
 export type TextStyle = {
